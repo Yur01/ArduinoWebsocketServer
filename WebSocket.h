@@ -42,8 +42,8 @@ www.codebender.cc
 #include <Arduino.h> // Arduino 1.0 or greater is required
 #include <stdlib.h>
 
-#include <SPI.h>
-#include <Ethernet.h>
+#include <ESP8266WiFi.h>
+#include <WiFiClient.h>
 
 #ifndef WEBSOCKET_H_
 #define WEBSOCKET_H_
@@ -79,7 +79,7 @@ public:
     void send(char *str, byte length);
 
 private:
-    EthernetServer m_server;
+    WiFiServer m_server;
     const char *m_socket_urlPrefix;
     int m_maxConnections;
 
@@ -87,6 +87,9 @@ private:
 
     // Pointer array of clients:
     WebSocket **m_connections;
+
+
+
 
 protected:
 friend class WebSocket;
@@ -101,7 +104,7 @@ class WebSocket {
 
 public:
     // Constructor.
-    WebSocket(WebSocketServer *server, EthernetClient cli);
+    WebSocket(WebSocketServer *server, WiFiClient cli);
 
     // Are we connected?
     bool isConnected();
@@ -113,7 +116,7 @@ public:
     void listen();
 
 private:
-    EthernetClient client;
+    WiFiClient client;
     enum State {DISCONNECTED, CONNECTED} state;
 
     // Discovers if the client's header is requesting an upgrade to a

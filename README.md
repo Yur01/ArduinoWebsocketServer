@@ -1,6 +1,6 @@
-## Websocket Server for Arduino
+## Websocket Server for ESP2866
 
-This library implements a Websocket server running on an Arduino. It's based on the [proposed standard][1] published December 2011 which is supported in the current versions (June 2012) of Firefox, Chrome, and Safari 6.0 beta (not older Safari, unfortunately) and thus is quite usable.
+This library implements a Websocket server running on an ESP2866 Board e.g NodeMCU. It's based on the [proposed standard][1] published December 2011 which is supported in the current versions (June 2012) of Firefox, Chrome, and Safari 6.0 beta (not older Safari, unfortunately) and thus is quite usable.
 
 The implementation in this library has restrictions as the Arduino platform resources are very limited:
 

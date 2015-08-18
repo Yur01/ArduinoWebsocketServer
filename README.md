@@ -2,13 +2,13 @@
 
 This library implements a Websocket server running on an ESP2866 Board e.g NodeMCU. It's based on the [proposed standard][1] published December 2011 which is supported in the current versions (June 2012) of Firefox, Chrome, and Safari 6.0 beta (not older Safari, unfortunately) and thus is quite usable.
 
-The implementation in this library has restrictions as the Arduino platform resources are very limited:
+The implementation in this library has (still) some restrictions:
 
 * The server **only** handles TXT frames.
-* The server **only** handles **single byte** chars. The Arduino just can't handle UTF-8 to it's full.
+* The server **only** handles **single byte** chars.
 * The server **only** accepts **final** frames with maximum payload length of 64 bytes. No fragmented data, in other words.
 * For now, the server silently ignores all frames except TXT and CLOSE.
-* The amount of simultaneous connections may be limited by RAM or hardware. (Each connection takes 16 bytes of RAM, and the W5100 shield is hardware-limited to 4 simultaneous connections.)
+* The amount of simultaneous connections may be limited by RAM or hardware.
 * There's no keep-alive logic implemented.
 
 _Required headers (example):_
@@ -35,9 +35,10 @@ The last line is the Base64 encoded SHA-1 hash of the key with a concatenated GU
 
 ### Requirements
 
-* Arduino IDE 1.0.1 or greater. You should not use 1.0 since it has a bug in the Ethernet library that will affect this library.
-* An Arduino Duemilanove or greater with Ethernet shield. An Arduino Ethernet should work too, but it has not been tested.
-* A Websocket client that conforms to version 13 of the protocol.
+* Arduino IDE 1.6.5 or greater
+* esp2866 for Arduino IDE 1.6.5-947-g39819f0 or later
+* An ESP2866 Board e.g NodeMCU 0.9 or 1.0
+* A Websocket client that conforms to version 13 of the protocol
 
 ### Getting started
 

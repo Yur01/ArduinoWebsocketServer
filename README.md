@@ -50,12 +50,7 @@ Start playing with your own code and enjoy!
 
 ### Feedback
 
-I'm a pretty lousy programmer, at least when it comes to Arduino, and it's been 15 years since I last touched C++, so do file issues for every opportunity for improvement.
-
-Oh by the way, quoting myself:
-
 > Don't forget to place a big ***fat*** disclaimer in the README. There is most certainly bugs in the code and I may well have misunderstood some things in the specification which I have only skimmed through and not slept with. So _please_ do not use this code in appliancies where living things could get hurt, like space shuttles, dog tread mills and Large Hadron Colliders.
-
 
 [1]: http://datatracker.ietf.org/doc/rfc6455/?include_text=1 "Protol version implemented here"
 [2]: http://www.websocket.org/echo.html "Echo Test client"

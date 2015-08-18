@@ -1,65 +1,43 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 
+// Here we define a maximum framelength to 64 bytes. Default is 256.
+#define MAX_FRAME_LENGTH 64
+#define DEBUG 1
+
+#include <WebSocket.h>
+
 const char* ssid = "<your ssid>";
 const char* password = "<your password>";
 
-WiFiServer server(80);
+// Create a Websocket server
+WebSocketServer wsServer;
 
-// Enabe debug tracing to Serial port.
-#define DEBUGGING true
-
-// Here we define a maximum framelength to 64 bytes. Default is 256.
-#define MAX_FRAME_LENGTH 256
-
-// Define how many callback functions you have. Default is 1.
-#define CALLBACK_FUNCTIONS 1
-
-#include <WebSocketServer2866.h>
-
-WebSocketServer webSocketServer;
-
-
-// Called when a new message from the WebSocket is received
-// Looks for a message in this form:
-//
-// DPV
-//
-// Where: 
-//        D is either 'd' or 'a' - digital or analog
-//        P is a pin #
-//        V is the value to apply to the pin
-//
-
-void handleClientData(String &dataString) {
-  //bool isDigital = dataString[0] == 'd';
-  //int pin = dataString[1] - '0';
-  //int value;
-
-  //value = dataString[2] - '0';
-
-    
-  //pinMode(pin, OUTPUT);
-   
-  //if (isDigital) {
-    //digitalWrite(pin, value);
-  //} else {
-    //analogWrite(pin, value);
-  //}
-    
-  Serial.println(dataString);
+void onConnect(WebSocket &socket) {
+  Serial.println("onConnect called");
 }
 
-// send the client the analog value of a pin
-void sendClientData(int pin) {
-  String data = "a";
+
+// You must have at least one function with the following signature.
+// It will be called by the server when a data frame is received.
+void onData(WebSocket &socket, char* dataString, byte frameLength) {
   
-  //pinMode(pin, INPUT);
-  data += String(pin);
-  webSocketServer.sendData(data);  
+#ifdef DEBUG
+  Serial.print("Got data: ");
+  Serial.write((unsigned char*)dataString, frameLength);
+  Serial.println();
+#endif
+  
+  // Just echo back data for fun.
+  socket.send(dataString, strlen(dataString));
+}
+
+void onDisconnect(WebSocket &socket) {
+  Serial.println("onDisconnect called");
 }
 
 void setup() {
+
   Serial.begin(115200);
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -74,34 +52,30 @@ void setup() {
   Serial.println(ssid);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
-  
-  //if (mdns.begin("esp8266", WiFi.localIP())) {
-    //Serial.println("MDNS responder started");
-  //}
 
-  // Start TCP (HTTP) server
-  server.begin();
-  Serial.println("TCP server started");
+  wsServer.registerConnectCallback(&onConnect);
+  wsServer.registerDataCallback(&onData);
+  wsServer.registerDisconnectCallback(&onDisconnect);  
+  wsServer.begin();
   
-  // Add service to MDNS-SD
-  //MDNS.addService("http", "tcp", 80);
-  
+  delay(100); // Give Ethernet time to get ready
+
 }
 
 void loop() {
-  String data;
-  WiFiClient client = server.available();
-
-  if (!client) {
-    return;
-  }
-  Serial.println("");
-  Serial.println("New client");
+  // Should be called for each loop.
+  wsServer.listen();
   
-  if (client.connected() && webSocketServer.handshake(client)) {
-    Serial.println("connected, handshake");
-    
-    while (client.connected()) {
+  // Do other stuff here, but don't hang or cause long delays.
+  delay(100);
+  
+  if (wsServer.connectionCount() > 0) {
+    //Serial.println(wsServer.connections[0]);
+    //wsServer.send("abc123", 6);
+  }
+
+/*
+  while (client.connected()) {
       data = webSocketServer.getData();
 
       if (data.length() > 0) {
@@ -109,11 +83,8 @@ void loop() {
       }
 
       sendClientData(1);
-      sendClientData(2);
-      sendClientData(3);
     }
   }
+*/
   
-  // wait to fully let the client disconnect
-  delay(100);
 }
